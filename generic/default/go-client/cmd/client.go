@@ -30,7 +30,6 @@ import (
 	"dubbo.apache.org/dubbo-go/v3/common/logger"
 	"dubbo.apache.org/dubbo-go/v3/config"
 	_ "dubbo.apache.org/dubbo-go/v3/imports"
-	"dubbo.apache.org/dubbo-go/v3/protocol/dubbo"
 	hessian "github.com/apache/dubbo-go-hessian2"
 	gxlog "github.com/dubbogo/gost/log"
 )
