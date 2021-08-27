@@ -20,8 +20,6 @@ package main
 import (
 	"context"
 	"fmt"
-	hessian "github.com/apache/dubbo-go-hessian2"
-	gxlog "github.com/dubbogo/gost/log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -32,10 +30,24 @@ import (
 	"dubbo.apache.org/dubbo-go/v3/common/logger"
 	"dubbo.apache.org/dubbo-go/v3/config"
 	_ "dubbo.apache.org/dubbo-go/v3/imports"
+	"dubbo.apache.org/dubbo-go/v3/protocol/dubbo"
+	hessian "github.com/apache/dubbo-go-hessian2"
+	gxlog "github.com/dubbogo/gost/log"
 )
 
 import (
 	"github.com/apache/dubbo-go-samples/api"
+)
+
+var (
+	appName         = "UserConsumer"
+	referenceConfig = config.ReferenceConfig{
+		InterfaceName: "org.apache.dubbo.UserProvider",
+		Cluster:       "failover",
+		Registry:      "demoZk",
+		Protocol:      dubbo.DUBBO,
+		Generic:       "true",
+	}
 )
 
 var grpcGreeterImpl = new(api.GreeterClientImpl)
@@ -48,6 +60,7 @@ func init() {
 func main() {
 	config.Load()
 	time.Sleep(3 * time.Second)
+	referenceConfig.GenericLoad(appName) //appName is the unique identification of RPCService
 
 	logger.Info("start to test dubbo")
 	req := &api.HelloRequest{
