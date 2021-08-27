@@ -39,28 +39,37 @@ import (
 	"github.com/apache/dubbo-go-samples/api"
 )
 
-var (
-	appName         = "UserConsumer"
-	referenceConfig = config.ReferenceConfig{
-		InterfaceName: "org.apache.dubbo.UserProvider",
-		Cluster:       "failover",
-		Registry:      "demoZk",
-		Protocol:      dubbo.DUBBO,
-		Generic:       "true",
-	}
-)
-
 var grpcGreeterImpl = new(api.GreeterClientImpl)
 
 func init() {
 	config.SetConsumerService(grpcGreeterImpl)
+
+	referenceConfig := config.NewReferenceConfig(
+		config.WithReferenceInterface("com.apache.dubbo.sample.basic.IGreeter"),
+		config.WithReferenceProtocolName("dubbo"),
+		config.WithReferenceRegistry("demoZk"),
+	)
+
+	consumerConfig := config.NewConsumerConfig(
+		config.WithConsumerReferenceConfig("greeterImpl", referenceConfig),
+	)
+
+	registryConfig := config.NewRegistryConfigWithProtocolDefaultPort("zookeeper")
+
+	rootConfig := config.NewRootConfig(
+		config.WithRootRegistryConfig("zkRegistryKey", registryConfig),
+		config.WithRootConsumerConfig(consumerConfig),
+	)
+
+	if err := rootConfig.Init(); err != nil {
+		panic(err)
+	}
 }
 
 // export DUBBO_GO_CONFIG_PATH= PATH_TO_SAMPLES/helloworld/go-client/conf/dubbogo.yml
 func main() {
 	config.Load()
 	time.Sleep(3 * time.Second)
-	referenceConfig.GenericLoad(appName) //appName is the unique identification of RPCService
 
 	logger.Info("start to test dubbo")
 	req := &api.HelloRequest{
@@ -105,7 +114,7 @@ func initSignal() {
 
 func callGetUser() {
 	gxlog.CInfo("\n\n\nstart to generic invoke")
-	resp, err := referenceConfig.GetRPCService().(*config.GenericService).Invoke(
+	resp, err := grpcGreeterImpl.GetRPCService().(*config.GenericService).Invoke(
 		context.TODO(),
 		[]interface{}{
 			"GetUser",
