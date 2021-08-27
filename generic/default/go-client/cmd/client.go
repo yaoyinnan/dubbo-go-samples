@@ -19,122 +19,38 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"os"
-	"os/signal"
-	"syscall"
 	"time"
 )
 
 import (
-	_ "dubbo.apache.org/dubbo-go/v3/cluster/cluster_impl"
-	_ "dubbo.apache.org/dubbo-go/v3/cluster/loadbalance"
 	"dubbo.apache.org/dubbo-go/v3/common/logger"
-	_ "dubbo.apache.org/dubbo-go/v3/common/proxy/proxy_factory"
 	"dubbo.apache.org/dubbo-go/v3/config"
-	_ "dubbo.apache.org/dubbo-go/v3/filter/filter_impl"
-	"dubbo.apache.org/dubbo-go/v3/protocol/dubbo"
-	_ "dubbo.apache.org/dubbo-go/v3/registry/protocol"
-	_ "dubbo.apache.org/dubbo-go/v3/registry/zookeeper"
-
-	hessian "github.com/apache/dubbo-go-hessian2"
-
-	"github.com/dubbogo/gost/log"
+	_ "dubbo.apache.org/dubbo-go/v3/imports"
 )
 
-var (
-	appName         = "UserConsumer"
-	referenceConfig = config.ReferenceConfig{
-		InterfaceName: "org.apache.dubbo.UserProvider",
-		Cluster:       "failover",
-		Registry:      "demoZk",
-		Protocol:      dubbo.DUBBO,
-		Generic:       "true",
-	}
+import (
+	"github.com/apache/dubbo-go-samples/api"
 )
+
+var grpcGreeterImpl = new(api.GreeterClientImpl)
 
 func init() {
-	config.Load()
-	referenceConfig.GenericLoad(appName) //appName is the unique identification of RPCService
-	time.Sleep(3 * time.Second)
+	config.SetConsumerService(grpcGreeterImpl)
 }
 
-// need to setup environment variable "CONF_CONSUMER_FILE_PATH" to "conf/client.yml" before run
+// export DUBBO_GO_CONFIG_PATH= PATH_TO_SAMPLES/helloworld/go-client/conf/dubbogo.yml
 func main() {
-	gxlog.CInfo("\n\ncall getUser")
-	callGetUser()
-	gxlog.CInfo("\n\ncall queryUser")
-	callQueryUser()
-	initSignal()
-}
+	config.Load()
+	time.Sleep(3 * time.Second)
 
-func initSignal() {
-	signals := make(chan os.Signal, 1)
-	// It is not possible to block SIGKILL or syscall.SIGSTOP
-	signal.Notify(signals, os.Interrupt, os.Kill, syscall.SIGHUP,
-		syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)
-	for {
-		sig := <-signals
-		logger.Infof("get signal %s", sig.String())
-		switch sig {
-		case syscall.SIGHUP:
-			// reload()
-		default:
-			time.AfterFunc(10*time.Second, func() {
-				logger.Warnf("app exit now by force...")
-				os.Exit(1)
-			})
-
-			// The program exits normally or timeout forcibly exits.
-			fmt.Println("app exit now...")
-			return
-		}
+	logger.Info("start to test dubbo")
+	req := &api.HelloRequest{
+		Name: "laurence",
 	}
-}
-
-func callGetUser() {
-	gxlog.CInfo("\n\n\nstart to generic invoke")
-	resp, err := referenceConfig.GetRPCService().(*config.GenericService).Invoke(
-		context.TODO(),
-		[]interface{}{
-			"GetUser",
-			[]string{"java.lang.String"},
-			[]hessian.Object{"A003"},
-		},
-	)
+	reply, err := grpcGreeterImpl.SayHello(context.Background(), req)
 	if err != nil {
-		panic(err)
+		logger.Error(err)
 	}
-	gxlog.CInfo("res: %+v\n", resp)
-	gxlog.CInfo("success!")
 
-}
-func callQueryUser() {
-	gxlog.CInfo("\n\n\nstart to generic invoke")
-	resp, err := referenceConfig.GetRPCService().(*config.GenericService).Invoke(
-		context.TODO(),
-		[]interface{}{
-			"queryUser",
-			[]string{"org.apache.dubbo.User"},
-			// the map represents a User object:
-			// &User {
-			// 		ID: "3213",
-			// 		Name: "panty",
-			// 		Age: 25,
-			// 		Time: time.Now(),
-			// }
-			[]hessian.Object{map[string]hessian.Object{
-				"iD":   "3213",
-				"name": "panty",
-				"age":  25,
-				"time": time.Now(),
-			}},
-		},
-	)
-	if err != nil {
-		panic(err)
-	}
-	gxlog.CInfo("res: %+v\n", resp)
-	gxlog.CInfo("success!")
-
+	logger.Infof("client response result: %v\n", reply)
 }
