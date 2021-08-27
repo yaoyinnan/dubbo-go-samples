@@ -19,6 +19,12 @@ package main
 
 import (
 	"context"
+	"fmt"
+	hessian "github.com/apache/dubbo-go-hessian2"
+	gxlog "github.com/dubbogo/gost/log"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 )
 
@@ -53,4 +59,51 @@ func main() {
 	}
 
 	logger.Infof("client response result: %v\n", reply)
+
+	gxlog.CInfo("\n\ncall getUser")
+	callGetUser()
+
+	initSignal()
+}
+
+func initSignal() {
+	signals := make(chan os.Signal, 1)
+	// It is not possible to block SIGKILL or syscall.SIGSTOP
+	signal.Notify(signals, os.Interrupt, os.Kill, syscall.SIGHUP,
+		syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)
+	for {
+		sig := <-signals
+		logger.Infof("get signal %s", sig.String())
+		switch sig {
+		case syscall.SIGHUP:
+			// reload()
+		default:
+			time.AfterFunc(10*time.Second, func() {
+				logger.Warnf("app exit now by force...")
+				os.Exit(1)
+			})
+
+			// The program exits normally or timeout forcibly exits.
+			fmt.Println("app exit now...")
+			return
+		}
+	}
+}
+
+func callGetUser() {
+	gxlog.CInfo("\n\n\nstart to generic invoke")
+	resp, err := referenceConfig.GetRPCService().(*config.GenericService).Invoke(
+		context.TODO(),
+		[]interface{}{
+			"GetUser",
+			[]string{"java.lang.String"},
+			[]hessian.Object{"A003"},
+		},
+	)
+	if err != nil {
+		panic(err)
+	}
+	gxlog.CInfo("res: %+v\n", resp)
+	gxlog.CInfo("success!")
+
 }
