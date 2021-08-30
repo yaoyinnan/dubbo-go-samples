@@ -71,12 +71,12 @@ func init() {
 func main() {
 	logger.Infof("\n\ncall getUser")
 	callGetUser()
-	//logger.Infof("\n\ncall queryUser")
-	//callQueryUser()
-	//logger.Infof("\n\ncall queryUsers")
-	//callQueryUsers()
-	//logger.Infof("\n\ncall callGetOneUser")
-	//callGetOneUser()
+	logger.Infof("\n\ncall queryUser")
+	callQueryUser()
+	logger.Infof("\n\ncall queryUsers")
+	callQueryUsers()
+	logger.Infof("\n\ncall callGetOneUser")
+	callGetOneUser()
 
 	initSignal()
 }

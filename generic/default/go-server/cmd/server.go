@@ -18,26 +18,45 @@
 package main
 
 import (
+	"dubbo.apache.org/dubbo-go/v3/common/logger"
 	"dubbo.apache.org/dubbo-go/v3/config"
 	_ "dubbo.apache.org/dubbo-go/v3/imports"
+	"fmt"
+	"github.com/apache/dubbo-go-samples/integrate_test/generic/default/pkg"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 )
-
-import (
-	"github.com/apache/dubbo-go-samples/api"
-)
-
-type UserProvider struct {
-	api.User
-}
-
-//func (s *GreeterProvider) SayHello(ctx context.Context, in *api.HelloRequest) (*api.User, error) {
-//	logger.Infof("Dubbo3 GreeterProvider get user name = %s\n", in.Name)
-//	return &api.User{Name: "Hello " + in.Name, Id: "12345", Age: 21}, nil
-//}
 
 // export DUBBO_GO_CONFIG_PATH= PATH_TO_SAMPLES/helloworld/go-server/conf/dubbogo.yml
 func main() {
-	config.SetProviderService(&UserProvider{})
+	config.SetProviderService(&pkg.User{})
 	config.Load()
+	initSignal()
 	select {}
+}
+
+func initSignal() {
+	signals := make(chan os.Signal, 1)
+	// It is not possible to block SIGKILL or syscall.SIGSTOP
+	signal.Notify(signals, os.Interrupt, os.Kill, syscall.SIGHUP,
+		syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)
+	for {
+		sig := <-signals
+		logger.Infof("get signal %s", sig.String())
+		switch sig {
+		case syscall.SIGHUP:
+			// reload()
+		default:
+			time.AfterFunc(10*time.Second, func() {
+				logger.Warnf("app exit now by force...")
+				os.Exit(1)
+			})
+
+			// The program exits normally or timeout forcibly exits.
+			fmt.Println("app exit now...")
+			return
+		}
+	}
 }
