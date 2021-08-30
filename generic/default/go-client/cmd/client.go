@@ -56,12 +56,12 @@ func init() {
 	referenceConfig = config.ReferenceConfig{
 		InterfaceName: "org.apache.dubbo.UserProvider",
 		Cluster:       "failover",
-		Registry:      []string{"demoZK"},
+		Registry:      []string{"zk"},
 		Protocol:      dubbo.DUBBO,
 		Generic:       "true",
 	}
 
-	rootConfig := config.NewRootConfig(config.WithRootRegistryConfig("demoZK", registryConfig))
+	rootConfig := config.NewRootConfig(config.WithRootRegistryConfig("zk", registryConfig))
 	_ = rootConfig.Init()
 	_ = referenceConfig.Init(rootConfig)
 	referenceConfig.GenericLoad(appName)

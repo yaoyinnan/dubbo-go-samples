@@ -18,11 +18,6 @@
 package main
 
 import (
-	"context"
-)
-
-import (
-	"dubbo.apache.org/dubbo-go/v3/common/logger"
 	"dubbo.apache.org/dubbo-go/v3/config"
 	_ "dubbo.apache.org/dubbo-go/v3/imports"
 )
@@ -31,18 +26,18 @@ import (
 	"github.com/apache/dubbo-go-samples/api"
 )
 
-type GreeterProvider struct {
-	api.GreeterProviderBase
+type UserProvider struct {
+	api.User
 }
 
-func (s *GreeterProvider) SayHello(ctx context.Context, in *api.HelloRequest) (*api.User, error) {
-	logger.Infof("Dubbo3 GreeterProvider get user name = %s\n", in.Name)
-	return &api.User{Name: "Hello " + in.Name, Id: "12345", Age: 21}, nil
-}
+//func (s *GreeterProvider) SayHello(ctx context.Context, in *api.HelloRequest) (*api.User, error) {
+//	logger.Infof("Dubbo3 GreeterProvider get user name = %s\n", in.Name)
+//	return &api.User{Name: "Hello " + in.Name, Id: "12345", Age: 21}, nil
+//}
 
 // export DUBBO_GO_CONFIG_PATH= PATH_TO_SAMPLES/helloworld/go-server/conf/dubbogo.yml
 func main() {
-	config.SetProviderService(&GreeterProvider{})
+	config.SetProviderService(&UserProvider{})
 	config.Load()
 	select {}
 }
