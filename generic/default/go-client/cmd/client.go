@@ -27,62 +27,58 @@ import (
 )
 
 import (
+	_ "dubbo.apache.org/dubbo-go/v3/cluster/cluster_impl"
+	_ "dubbo.apache.org/dubbo-go/v3/cluster/loadbalance"
 	"dubbo.apache.org/dubbo-go/v3/common/logger"
+	_ "dubbo.apache.org/dubbo-go/v3/common/proxy/proxy_factory"
 	"dubbo.apache.org/dubbo-go/v3/config"
-	_ "dubbo.apache.org/dubbo-go/v3/imports"
+	_ "dubbo.apache.org/dubbo-go/v3/filter/filter_impl"
+	"dubbo.apache.org/dubbo-go/v3/protocol/dubbo"
+	_ "dubbo.apache.org/dubbo-go/v3/registry/protocol"
+	_ "dubbo.apache.org/dubbo-go/v3/registry/zookeeper"
+
 	hessian "github.com/apache/dubbo-go-hessian2"
-	gxlog "github.com/dubbogo/gost/log"
+
+	"github.com/dubbogo/gost/log"
 )
 
-import (
-	"github.com/apache/dubbo-go-samples/api"
+var (
+	appName         = "dubbo.io"
+	referenceConfig config.ReferenceConfig
 )
-
-var grpcGreeterImpl = new(api.GreeterClientImpl)
 
 func init() {
-	config.SetConsumerService(grpcGreeterImpl)
-
-	referenceConfig := config.NewReferenceConfig(
-		config.WithReferenceInterface("com.apache.dubbo.sample.basic.IGreeter"),
-		config.WithReferenceProtocolName("dubbo"),
-		config.WithReferenceRegistry("demoZk"),
-	)
-
-	consumerConfig := config.NewConsumerConfig(
-		config.WithConsumerReferenceConfig("greeterImpl", referenceConfig),
-	)
-
-	registryConfig := config.NewRegistryConfigWithProtocolDefaultPort("zookeeper")
-
-	rootConfig := config.NewRootConfig(
-		config.WithRootRegistryConfig("zkRegistryKey", registryConfig),
-		config.WithRootConsumerConfig(consumerConfig),
-	)
-
-	if err := rootConfig.Init(); err != nil {
-		panic(err)
+	registryConfig := &config.RegistryConfig{
+		Protocol: "zookeeper",
+		Address:  "dubbo.nas.local:2181",
 	}
+
+	referenceConfig = config.ReferenceConfig{
+		InterfaceName: "org.apache.dubbo.UserProvider",
+		Cluster:       "failover",
+		Registry:      []string{"Zk"},
+		Protocol:      dubbo.DUBBO,
+		Generic:       "true",
+	}
+
+	rootConfig := config.NewRootConfig(config.WithRootRegistryConfig("zk", registryConfig))
+	_ = rootConfig.Init()
+	_ = referenceConfig.Init(rootConfig)
+	referenceConfig.GenericLoad(appName)
+
+	time.Sleep(3 * time.Second)
 }
 
-// export DUBBO_GO_CONFIG_PATH= PATH_TO_SAMPLES/helloworld/go-client/conf/dubbogo.yml
+// need to setup environment variable "CONF_CONSUMER_FILE_PATH" to "conf/client.yml" before run
 func main() {
-	config.Load()
-	time.Sleep(3 * time.Second)
-
-	logger.Info("start to test dubbo")
-	req := &api.HelloRequest{
-		Name: "laurence",
-	}
-	reply, err := grpcGreeterImpl.SayHello(context.Background(), req)
-	if err != nil {
-		logger.Error(err)
-	}
-
-	logger.Infof("client response result: %v\n", reply)
-
 	gxlog.CInfo("\n\ncall getUser")
 	callGetUser()
+	gxlog.CInfo("\n\ncall queryUser")
+	callQueryUser()
+	gxlog.CInfo("\n\ncall queryUsers")
+	callQueryUsers()
+	gxlog.CInfo("\n\ncall callGetOneUser")
+	callGetOneUser()
 
 	initSignal()
 }
@@ -113,7 +109,7 @@ func initSignal() {
 
 func callGetUser() {
 	gxlog.CInfo("\n\n\nstart to generic invoke")
-	resp, err := grpcGreeterImpl.GetRPCService().(*config.GenericService).Invoke(
+	resp, err := referenceConfig.GetRPCService().(*config.GenericService).Invoke(
 		context.TODO(),
 		[]interface{}{
 			"GetUser",
@@ -127,4 +123,80 @@ func callGetUser() {
 	gxlog.CInfo("res: %+v\n", resp)
 	gxlog.CInfo("success!")
 
+}
+func callQueryUser() {
+	gxlog.CInfo("\n\n\nstart to generic invoke")
+	resp, err := referenceConfig.GetRPCService().(*config.GenericService).Invoke(
+		context.TODO(),
+		[]interface{}{
+			"queryUser",
+			[]string{"org.apache.dubbo.User"},
+			// the map represents a User object:
+			// &User {
+			// 		ID: "3213",
+			// 		Name: "panty",
+			// 		Age: 25,
+			// 		Time: time.Now(),
+			// }
+			[]hessian.Object{map[string]hessian.Object{
+				"iD":   "3213",
+				"name": "panty",
+				"age":  25,
+				"time": time.Now(),
+			}},
+		},
+	)
+	if err != nil {
+		panic(err)
+	}
+	gxlog.CInfo("res: %+v\n", resp)
+	gxlog.CInfo("success!")
+}
+
+func callQueryUsers() {
+	resp, err := referenceConfig.GetRPCService().(*config.GenericService).Invoke(
+		context.TODO(),
+		[]interface{}{
+			"QueryUsers",
+			[]string{"java.lang.Array"},
+			[]hessian.Object{
+				[]hessian.Object{
+					map[string]hessian.Object{
+						"iD":   "3213",
+						"name": "panty",
+						"age":  25,
+						"time": time.Now(),
+					},
+					map[string]hessian.Object{
+						"iD":   "3212",
+						"name": "XavierNiu",
+						"age":  24,
+						"time": time.Now().Add(4),
+					},
+				},
+			},
+		},
+	)
+	if err != nil {
+		panic(err)
+	}
+	gxlog.CInfo("res: %+v\n", resp)
+	gxlog.CInfo("success!")
+}
+
+func callGetOneUser() {
+	gxlog.CInfo("\n\n\nstart to generic invoke")
+	resp, err := referenceConfig.GetRPCService().(*config.GenericService).Invoke(
+		context.TODO(),
+		[]interface{}{
+			"GetOneUser",
+			[]hessian.Object{},
+			[]hessian.Object{},
+		},
+	)
+	if err != nil {
+		panic(err)
+	}
+	gxlog.CInfo("res: %+v\n", resp)
+	gxlog.CInfo("success!")
 }
