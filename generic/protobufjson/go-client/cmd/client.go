@@ -19,6 +19,7 @@ package main
 
 import (
 	"context"
+	"dubbo.apache.org/dubbo-go/v3/config/generic"
 	"fmt"
 	"os"
 	"os/signal"
@@ -32,36 +33,42 @@ import (
 	"dubbo.apache.org/dubbo-go/v3/common/logger"
 	_ "dubbo.apache.org/dubbo-go/v3/common/proxy/proxy_factory"
 	"dubbo.apache.org/dubbo-go/v3/config"
+	_ "dubbo.apache.org/dubbo-go/v3/config/generic"
 	_ "dubbo.apache.org/dubbo-go/v3/filter/filter_impl"
 	"dubbo.apache.org/dubbo-go/v3/protocol/dubbo"
 	_ "dubbo.apache.org/dubbo-go/v3/registry/protocol"
 	_ "dubbo.apache.org/dubbo-go/v3/registry/zookeeper"
 
 	hessian "github.com/apache/dubbo-go-hessian2"
-
-	"github.com/dubbogo/gost/log"
 )
 
 var (
-	appName         = "UserConsumer"
-	referenceConfig = config.ReferenceConfig{
-		InterfaceName: "org.apache.dubbo.UserProvider",
-		Cluster:       "failover",
-		Registry:      "demoZk",
-		Protocol:      dubbo.DUBBO,
-		Generic:       "protobuf-json",
-	}
+	appName         = "dubbo.io"
+	referenceConfig config.ReferenceConfig
 )
 
 func init() {
-	config.Load()
-	referenceConfig.GenericLoad(appName) //appName is the unique identification of RPCService
-	time.Sleep(3 * time.Second)
+	registryConfig := &config.RegistryConfig{
+		Protocol: "zookeeper",
+		Address:  "127.0.0.1:2181",
+	}
+
+	referenceConfig = config.ReferenceConfig{
+		InterfaceName: "org.apache.dubbo.UserProvider",
+		Cluster:       "failover",
+		Registry:      []string{"zk"},
+		Protocol:      dubbo.DUBBO,
+		Generic:       "protobuf-json",
+	}
+
+	rootConfig := config.NewRootConfig(config.WithRootRegistryConfig("zk", registryConfig))
+	_ = rootConfig.Init()
+	_ = referenceConfig.Init(rootConfig)
+	referenceConfig.GenericLoad(appName)
 }
 
-// need to setup environment variable "CONF_CONSUMER_FILE_PATH" to "conf/client.yml" before run
+// export DUBBO_GO_CONFIG_PATH= PATH_TO_SAMPLES/generic/protobufjson/go-client/conf/dubbogo.yml
 func main() {
-	gxlog.CInfo("\n\ncall getUser")
 	callGetUser()
 
 	initSignal()
@@ -92,8 +99,9 @@ func initSignal() {
 }
 
 func callGetUser() {
-	gxlog.CInfo("\n\n\nstart to generic invoke")
-	resp, err := referenceConfig.GetRPCService().(*config.GenericService).Invoke(
+	logger.Infof("\n\ncall callGetUser")
+	logger.Infof("start to generic invoke")
+	resp, err := referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
 		context.TODO(),
 		[]interface{}{
 			"GetUser",
@@ -108,7 +116,6 @@ func callGetUser() {
 	if err != nil {
 		panic(err)
 	}
-	gxlog.CInfo("res: %+v\n", resp)
-	gxlog.CInfo("success!")
-
+	logger.Infof("res: %+v\n", resp)
+	logger.Infof("success!")
 }

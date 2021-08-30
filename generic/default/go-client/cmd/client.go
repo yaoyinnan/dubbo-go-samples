@@ -69,13 +69,9 @@ func init() {
 
 // need to setup environment variable "CONF_CONSUMER_FILE_PATH" to "conf/client.yml" before run
 func main() {
-	logger.Infof("\n\ncall getUser")
 	callGetUser()
-	logger.Infof("\n\ncall queryUser")
 	callQueryUser()
-	logger.Infof("\n\ncall queryUsers")
 	callQueryUsers()
-	logger.Infof("\n\ncall callGetOneUser")
 	callGetOneUser()
 
 	initSignal()
@@ -106,7 +102,7 @@ func initSignal() {
 }
 
 func callGetUser() {
-	logger.Infof("callGetUser")
+	logger.Infof("\n\ncallGetUser")
 	logger.Infof("start to generic invoke")
 	resp, err := referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
 		context.TODO(),
@@ -124,6 +120,7 @@ func callGetUser() {
 
 }
 func callQueryUser() {
+	logger.Infof("\n\ncall queryUser")
 	logger.Infof("start to generic invoke")
 	resp, err := referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
 		context.TODO(),
@@ -153,6 +150,7 @@ func callQueryUser() {
 }
 
 func callQueryUsers() {
+	logger.Infof("\n\ncall queryUsers")
 	resp, err := referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
 		context.TODO(),
 		[]interface{}{
@@ -184,6 +182,7 @@ func callQueryUsers() {
 }
 
 func callGetOneUser() {
+	logger.Infof("\n\ncall callGetOneUser")
 	logger.Infof("start to generic invoke")
 	resp, err := referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
 		context.TODO(),

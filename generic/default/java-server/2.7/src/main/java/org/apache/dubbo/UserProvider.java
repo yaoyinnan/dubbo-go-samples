@@ -42,7 +42,9 @@ public interface UserProvider {
 
     User queryUser(User user);
 
-    User queryUsers(ArrayList<String> userList)
+//     User queryUsers(User user);
+
+//     ArrayList<User> queryUsers(ArrayList<User> userList)
 
     Map<String, User> queryAll();
 

@@ -92,6 +92,16 @@ public class UserProviderImpl implements UserProvider {
         return new User(user.getId(), "hello:" +user.getName(), user.getAge() + 18);
     }
 
+//     public User queryUsers(User user) {
+//         return new User(user.getId(), "hello:" +user.getName(), user.getAge() + 18);
+// //         logger.info("input com.dubbogo.user = " + userList);
+// //         Map<String, User> map = new HashMap<String, User>();
+// //         for(int i = 0; i < len(userList); i++){
+// //             map.put(i, new User(user.getId, user.getName(), user.getAge() + 18));
+// //         }
+// //         return map;
+//     }
+
     public Map<String, User> queryAll() {
         return userMap;
     }

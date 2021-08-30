@@ -124,15 +124,6 @@ public class UserProviderAnotherImpl implements UserProvider {
         return new User(user.getId(), "get:" + user.getName(), user.getAge() + 18);
     }
 
-    public User queryUsers(ArrayList<String> userList) {
-//         logger.info("input com.dubbogo.user = " + userList);
-        Map<String, User> map = new HashMap<String, User>();
-        for(user in userList){
-            map.put(user.getId(), new User(user.getName(), user.getAge() + 18));
-        }
-        return map;
-    }
-
     public Map<String, User> queryAll() {
         logger.info("input");
         Map<String, User> map = new HashMap<String, User>();
