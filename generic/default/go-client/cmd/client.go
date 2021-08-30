@@ -19,6 +19,7 @@ package main
 
 import (
 	"context"
+	"dubbo.apache.org/dubbo-go/v3/config/generic"
 	"fmt"
 	"os"
 	"os/signal"
@@ -32,14 +33,13 @@ import (
 	"dubbo.apache.org/dubbo-go/v3/common/logger"
 	_ "dubbo.apache.org/dubbo-go/v3/common/proxy/proxy_factory"
 	"dubbo.apache.org/dubbo-go/v3/config"
+	_ "dubbo.apache.org/dubbo-go/v3/config/generic"
 	_ "dubbo.apache.org/dubbo-go/v3/filter/filter_impl"
 	"dubbo.apache.org/dubbo-go/v3/protocol/dubbo"
 	_ "dubbo.apache.org/dubbo-go/v3/registry/protocol"
 	_ "dubbo.apache.org/dubbo-go/v3/registry/zookeeper"
 
 	hessian "github.com/apache/dubbo-go-hessian2"
-
-	"github.com/dubbogo/gost/log"
 )
 
 var (
@@ -50,35 +50,33 @@ var (
 func init() {
 	registryConfig := &config.RegistryConfig{
 		Protocol: "zookeeper",
-		Address:  "dubbo.nas.local:2181",
+		Address:  "127.0.0.1:2181",
 	}
 
 	referenceConfig = config.ReferenceConfig{
 		InterfaceName: "org.apache.dubbo.UserProvider",
 		Cluster:       "failover",
-		Registry:      []string{"Zk"},
+		Registry:      []string{"demoZK"},
 		Protocol:      dubbo.DUBBO,
 		Generic:       "true",
 	}
 
-	rootConfig := config.NewRootConfig(config.WithRootRegistryConfig("zk", registryConfig))
+	rootConfig := config.NewRootConfig(config.WithRootRegistryConfig("demoZK", registryConfig))
 	_ = rootConfig.Init()
 	_ = referenceConfig.Init(rootConfig)
 	referenceConfig.GenericLoad(appName)
-
-	time.Sleep(3 * time.Second)
 }
 
 // need to setup environment variable "CONF_CONSUMER_FILE_PATH" to "conf/client.yml" before run
 func main() {
-	gxlog.CInfo("\n\ncall getUser")
+	logger.Infof("\n\ncall getUser")
 	callGetUser()
-	gxlog.CInfo("\n\ncall queryUser")
-	callQueryUser()
-	gxlog.CInfo("\n\ncall queryUsers")
-	callQueryUsers()
-	gxlog.CInfo("\n\ncall callGetOneUser")
-	callGetOneUser()
+	//logger.Infof("\n\ncall queryUser")
+	//callQueryUser()
+	//logger.Infof("\n\ncall queryUsers")
+	//callQueryUsers()
+	//logger.Infof("\n\ncall callGetOneUser")
+	//callGetOneUser()
 
 	initSignal()
 }
@@ -108,8 +106,9 @@ func initSignal() {
 }
 
 func callGetUser() {
-	gxlog.CInfo("\n\n\nstart to generic invoke")
-	resp, err := referenceConfig.GetRPCService().(*config.GenericService).Invoke(
+	logger.Infof("callGetUser")
+	logger.Infof("start to generic invoke")
+	resp, err := referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
 		context.TODO(),
 		[]interface{}{
 			"GetUser",
@@ -120,13 +119,13 @@ func callGetUser() {
 	if err != nil {
 		panic(err)
 	}
-	gxlog.CInfo("res: %+v\n", resp)
-	gxlog.CInfo("success!")
+	logger.Infof("res: %+v\n", resp)
+	logger.Infof("success!")
 
 }
 func callQueryUser() {
-	gxlog.CInfo("\n\n\nstart to generic invoke")
-	resp, err := referenceConfig.GetRPCService().(*config.GenericService).Invoke(
+	logger.Infof("start to generic invoke")
+	resp, err := referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
 		context.TODO(),
 		[]interface{}{
 			"queryUser",
@@ -149,12 +148,12 @@ func callQueryUser() {
 	if err != nil {
 		panic(err)
 	}
-	gxlog.CInfo("res: %+v\n", resp)
-	gxlog.CInfo("success!")
+	logger.Infof("res: %+v\n", resp)
+	logger.Infof("success!")
 }
 
 func callQueryUsers() {
-	resp, err := referenceConfig.GetRPCService().(*config.GenericService).Invoke(
+	resp, err := referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
 		context.TODO(),
 		[]interface{}{
 			"QueryUsers",
@@ -180,13 +179,13 @@ func callQueryUsers() {
 	if err != nil {
 		panic(err)
 	}
-	gxlog.CInfo("res: %+v\n", resp)
-	gxlog.CInfo("success!")
+	logger.Infof("res: %+v\n", resp)
+	logger.Infof("success!")
 }
 
 func callGetOneUser() {
-	gxlog.CInfo("\n\n\nstart to generic invoke")
-	resp, err := referenceConfig.GetRPCService().(*config.GenericService).Invoke(
+	logger.Infof("start to generic invoke")
+	resp, err := referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
 		context.TODO(),
 		[]interface{}{
 			"GetOneUser",
@@ -197,6 +196,6 @@ func callGetOneUser() {
 	if err != nil {
 		panic(err)
 	}
-	gxlog.CInfo("res: %+v\n", resp)
-	gxlog.CInfo("success!")
+	logger.Infof("res: %+v\n", resp)
+	logger.Infof("success!")
 }
