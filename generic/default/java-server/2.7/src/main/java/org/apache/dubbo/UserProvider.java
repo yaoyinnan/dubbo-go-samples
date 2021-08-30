@@ -42,6 +42,8 @@ public interface UserProvider {
 
     User queryUser(User user);
 
+    User queryUsers(ArrayList<String> userList)
+
     Map<String, User> queryAll();
 
     int Calc(int a, int b);
