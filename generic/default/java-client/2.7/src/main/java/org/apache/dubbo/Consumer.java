@@ -39,17 +39,17 @@ public class Consumer {
      }
 
      private static void initConfig(){
-          System.out.println("\n\n\nstart to init config");
-          ApplicationConfig applicationConfig = new ApplicationConfig();
-          ReferenceConfig<GenericService> reference = new ReferenceConfig<GenericService>();
-          applicationConfig.setName("UserProviderGer");
-          reference.setApplication(applicationConfig);
-          RegistryConfig registryConfig = new RegistryConfig();
-          registryConfig.setAddress("zookeeper://127.0.0.1:2181");
-          reference.setRegistry(registryConfig);
-          reference.setGeneric(true);
-          reference.setInterface("org.apache.dubbo.UserProvider");
-          genericService = reference.get();
+            System.out.println("\n\n\nstart to init config");
+            ApplicationConfig applicationConfig = new ApplicationConfig();
+            ReferenceConfig<GenericService> reference = new ReferenceConfig<GenericService>();
+            applicationConfig.setName("user-info-server");
+            reference.setApplication(applicationConfig);
+            RegistryConfig registryConfig = new RegistryConfig();
+            registryConfig.setAddress("zookeeper://127.0.0.1:2181");
+            reference.setRegistry(registryConfig);
+            reference.setGeneric(true);
+            reference.setInterface("org.apache.dubbo.UserProvider");
+            genericService = reference.get();
      }
 
      private static void callGetUser(){
