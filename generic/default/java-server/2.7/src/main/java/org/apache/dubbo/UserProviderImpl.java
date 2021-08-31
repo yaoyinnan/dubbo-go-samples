@@ -26,6 +26,7 @@ public class UserProviderImpl implements UserProvider {
     // private static final Logger logger = LoggerFactory.getLogger(getClass()); // Only output to dubbo's log(logs/server.log)
     private static final Logger LOG = LoggerFactory.getLogger("UserLogger"); // Output to com.dubbogo.user-server.log
     Map<String, User> userMap = new HashMap<String, User>();
+    List<User> userList = new ArrayList<User>();
 
     public UserProviderImpl() {
         userMap.put("A001", new User("A001", "demo-zhangsan", 18));
@@ -88,24 +89,17 @@ public class UserProviderImpl implements UserProvider {
         return map;
     }
 
+    public User GetOneUser() { return new User("1000", "xavierniu", 24); }
+
     public User queryUser(User user) {
         return new User(user.getId(), "hello:" +user.getName(), user.getAge() + 18);
     }
 
-//     public User queryUsers(User user) {
-//         return new User(user.getId(), "hello:" +user.getName(), user.getAge() + 18);
-// //         logger.info("input com.dubbogo.user = " + userList);
-// //         Map<String, User> map = new HashMap<String, User>();
-// //         for(int i = 0; i < len(userList); i++){
-// //             map.put(i, new User(user.getId, user.getName(), user.getAge() + 18));
-// //         }
-// //         return map;
-//     }
+//    public Map<String, User> queryUsers(Map<String, User> users) { return userMap; }
 
     public Map<String, User> queryAll() {
         return userMap;
     }
-
 
     public User getUser(int userCode) {
         return new User(String.valueOf(userCode), "userCode get", 48);

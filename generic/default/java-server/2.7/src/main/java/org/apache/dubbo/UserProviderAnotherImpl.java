@@ -119,10 +119,20 @@ public class UserProviderAnotherImpl implements UserProvider {
         return new User(String.valueOf(usercode), name, 18);
     }
 
+    public User GetOneUser() { return new User("1000", "xavierniu", 24); }
+
     public User queryUser(User user) {
         logger.info("input com.dubbogo.user = " + user);
         return new User(user.getId(), "get:" + user.getName(), user.getAge() + 18);
     }
+
+//    public Map<String, User> queryUsers(Map<String, User> users) {
+////        logger.info("input com.dubbogo.user = " + userList.size());
+//        Map<String, User> map = new HashMap<String, User>();
+//        map.put("001", new User("001", "Joe", 18));
+//        map.put("002", new User("002", "Wen", 20));
+//        return map;
+//    }
 
     public Map<String, User> queryAll() {
         logger.info("input");

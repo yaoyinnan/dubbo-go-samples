@@ -17,6 +17,7 @@
 
 package org.apache.dubbo;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -40,11 +41,11 @@ public interface UserProvider {
 
     User getUser(int usercode, String name);
 
+    User GetOneUser();
+
     User queryUser(User user);
 
-//     User queryUsers(User user);
-
-//     ArrayList<User> queryUsers(ArrayList<User> userList)
+//    Map<String, User> queryUsers(List<String> userIdList);
 
     Map<String, User> queryAll();
 

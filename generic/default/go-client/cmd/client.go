@@ -72,7 +72,7 @@ func main() {
 	callGetUser()
 	callQueryUser()
 	callQueryUsers()
-	callGetOneUser()
+	//callGetOneUser()
 
 	initSignal()
 }
@@ -182,7 +182,7 @@ func callQueryUsers() {
 }
 
 func callGetOneUser() {
-	logger.Infof("\n\ncall callGetOneUser")
+	logger.Infof("\n\ncall GetOneUser")
 	logger.Infof("start to generic invoke")
 	resp, err := referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
 		context.TODO(),
