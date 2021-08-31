@@ -71,7 +71,7 @@ func init() {
 func main() {
 	callGetUser()
 	callQueryUser()
-	callQueryUsers()
+	//callQueryUsers()
 	//callGetOneUser()
 
 	initSignal()
