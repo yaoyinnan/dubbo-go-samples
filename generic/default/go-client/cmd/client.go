@@ -71,7 +71,7 @@ func init() {
 func main() {
 	callGetUser()
 	callQueryUser()
-	//callQueryUsers()
+	callQueryUsers()
 	//callGetOneUser()
 
 	initSignal()
@@ -102,8 +102,8 @@ func initSignal() {
 }
 
 func callGetUser() {
-	logger.Infof("\n\ncallGetUser")
-	logger.Infof("start to generic invoke")
+	logger.Infof("\n\n\nCall GetUser")
+	logger.Infof("Start to generic invoke")
 	resp, err := referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
 		context.TODO(),
 		[]interface{}{
@@ -116,16 +116,16 @@ func callGetUser() {
 		panic(err)
 	}
 	logger.Infof("res: %+v\n", resp)
-	logger.Infof("success!")
+	logger.Infof("success!\n\n\n")
 
 }
 func callQueryUser() {
-	logger.Infof("\n\ncall queryUser")
-	logger.Infof("start to generic invoke")
+	logger.Infof("\n\n\nCall QueryUser")
+	logger.Infof("Start to generic invoke")
 	resp, err := referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
 		context.TODO(),
 		[]interface{}{
-			"queryUser",
+			"QueryUser",
 			[]string{"org.apache.dubbo.User"},
 			// the map represents a User object:
 			// &User {
@@ -134,28 +134,30 @@ func callQueryUser() {
 			// 		Age: 25,
 			// 		Time: time.Now(),
 			// }
-			[]hessian.Object{map[string]hessian.Object{
-				"iD":   "3213",
-				"name": "panty",
-				"age":  25,
-				"time": time.Now(),
-			}},
+			[]hessian.Object{
+				map[string]hessian.Object{
+					"iD":   "3213",
+					"name": "panty",
+					"age":  25,
+					"time": time.Now(),
+				}},
 		},
 	)
 	if err != nil {
 		panic(err)
 	}
 	logger.Infof("res: %+v\n", resp)
-	logger.Infof("success!")
+	logger.Infof("success!\n\n\n")
 }
 
 func callQueryUsers() {
-	logger.Infof("\n\ncall queryUsers")
+	logger.Infof("\n\n\nCall QueryUsers")
+	logger.Infof("Start to generic invoke")
 	resp, err := referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
 		context.TODO(),
 		[]interface{}{
 			"QueryUsers",
-			[]string{"java.lang.Array"},
+			[]string{"java.util.ArrayList"},
 			[]hessian.Object{
 				[]hessian.Object{
 					map[string]hessian.Object{
@@ -178,12 +180,12 @@ func callQueryUsers() {
 		panic(err)
 	}
 	logger.Infof("res: %+v\n", resp)
-	logger.Infof("success!")
+	logger.Infof("success!\n\n\n")
 }
 
 func callGetOneUser() {
-	logger.Infof("\n\ncall GetOneUser")
-	logger.Infof("start to generic invoke")
+	logger.Infof("\n\n\nCall GetOneUser")
+	logger.Infof("Start to generic invoke")
 	resp, err := referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
 		context.TODO(),
 		[]interface{}{
@@ -196,5 +198,5 @@ func callGetOneUser() {
 		panic(err)
 	}
 	logger.Infof("res: %+v\n", resp)
-	logger.Infof("success!")
+	logger.Infof("success!\n\n\n")
 }

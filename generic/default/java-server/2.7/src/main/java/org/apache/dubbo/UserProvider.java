@@ -37,17 +37,17 @@ public interface UserProvider {
 
     Map<String, User> GetUserMap(List<String> userIdList);
 
-    User getUser(int usercode);
+    User GetUser(int usercode);
 
-    User getUser(int usercode, String name);
+    User GetUser(int usercode, String name);
 
     User GetOneUser();
 
-    User queryUser(User user);
+    User QueryUser(User user);
 
-//    Map<String, User> queryUsers(List<String> userIdList);
+    Map<String, User> QueryUsers(ArrayList<User> userList);
 
-    Map<String, User> queryAll();
+    Map<String, User> QueryAll();
 
     int Calc(int a, int b);
 

@@ -110,31 +110,33 @@ public class UserProviderAnotherImpl implements UserProvider {
     }
 
     // @Override
-    public User getUser(int userCode) {
+    public User GetUser(int userCode) {
         logger.info("input userCode = " + userCode);
         return new User(String.valueOf(userCode), "userCode get", 48);
     }
 
-    public User getUser(int usercode, String name) {
+    public User GetUser(int usercode, String name) {
         return new User(String.valueOf(usercode), name, 18);
     }
 
     public User GetOneUser() { return new User("1000", "xavierniu", 24); }
 
-    public User queryUser(User user) {
+    public User QueryUser(User user) {
         logger.info("input com.dubbogo.user = " + user);
         return new User(user.getId(), "get:" + user.getName(), user.getAge() + 18);
     }
 
-//    public Map<String, User> queryUsers(Map<String, User> users) {
-////        logger.info("input com.dubbogo.user = " + userList.size());
-//        Map<String, User> map = new HashMap<String, User>();
-//        map.put("001", new User("001", "Joe", 18));
-//        map.put("002", new User("002", "Wen", 20));
-//        return map;
-//    }
+    public Map<String, User> QueryUsers(ArrayList<User> userList) {
+        logger.info("input com.dubbogo.userList = " + userList);
+        Map<String, User> map = new HashMap<String, User>();
+        for(User user : userList){
+            map.put(user.getId(), new User(user.getId(), "get:" + user.getName(), user.getAge() + 18));
+        }
 
-    public Map<String, User> queryAll() {
+        return map;
+    }
+
+    public Map<String, User> QueryAll() {
         logger.info("input");
         Map<String, User> map = new HashMap<String, User>();
         map.put("001", new User("001", "Joe", 18));
