@@ -56,7 +56,7 @@ public class Consumer {
         System.out.println("Start to generic invoke");
         Object[] parameterArgs = new Object[]{"A003"};
         Object result = genericService.$invoke("GetUser", new String[]{"java.lang.String"} , parameterArgs);
-          System.out.println("\n\n\n" + "res: " + result + "\n\n\n");
+        System.out.println("\n\n\n" + "res: " + result + "\n\n\n");
      }
 
      private static void callQueryUser(){
