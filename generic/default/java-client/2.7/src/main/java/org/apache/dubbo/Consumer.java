@@ -67,7 +67,7 @@ public class Consumer {
         user.setId("id");
         user.setAge(10);
         Object[] parameterArgs = new Object[]{user};
-        Object result = genericService.$invoke("QueryUser", new String[]{"org.apache.dubbo.User"} , parameterArgs);
+        Object result = genericService.$invoke("queryUser", new String[]{"org.apache.dubbo.User"} , parameterArgs);
         System.out.println("\n\n\n" + "res: " + result + "\n\n\n");
      }
 
@@ -78,15 +78,15 @@ public class Consumer {
         userArr.add(new User("A001", "Patrick", 10));
         userArr.add(new User("A002", "xavier-niu", 24));
         Object[] parameterArgs = new Object[]{userArr};
-        Object result = genericService.$invoke("QueryUsers", new String[]{"java.util.ArrayList"} , parameterArgs);
+        Object result = genericService.$invoke("queryUsers", new String[]{"java.util.ArrayList"} , parameterArgs);
         System.out.println("\n\n\n" + "res: " + result + "\n\n\n");
      }
 
      private static void callGetOneUser(){
         System.out.println("\n\n\nCall GetOneUser");
         System.out.println("Start to generic invoke");
-        Object[] parameterArgs = new Object[]{"null"};
-        Object result = genericService.$invoke("GetOneUser", new String[]{"null"} , parameterArgs);
+        Object[] parameterArgs = new Object[]{};
+        Object result = genericService.$invoke("GetOneUser", null , parameterArgs);
         System.out.println("\n\n\n" + "res: " + result + "\n\n\n");
      }
 }

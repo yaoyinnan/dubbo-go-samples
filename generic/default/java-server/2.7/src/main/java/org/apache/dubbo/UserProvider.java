@@ -43,11 +43,11 @@ public interface UserProvider {
 
     User GetOneUser();
 
-    User QueryUser(User user);
+    User queryUser(User user);
 
-    Map<String, User> QueryUsers(ArrayList<User> userList);
+    Map<String, User> queryUsers(ArrayList<User> userList);
 
-    Map<String, User> QueryAll();
+    Map<String, User> queryAll();
 
     int Calc(int a, int b);
 

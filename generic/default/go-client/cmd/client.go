@@ -40,6 +40,8 @@ import (
 	_ "dubbo.apache.org/dubbo-go/v3/registry/zookeeper"
 
 	hessian "github.com/apache/dubbo-go-hessian2"
+
+	"github.com/apache/dubbo-go-samples/integrate_test/generic/default/pkg"
 )
 
 var (
@@ -125,7 +127,7 @@ func callQueryUser() {
 	resp, err := referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
 		context.TODO(),
 		[]interface{}{
-			"QueryUser",
+			"queryUser",
 			[]string{"org.apache.dubbo.User"},
 			// the map represents a User object:
 			// &User {
@@ -156,21 +158,21 @@ func callQueryUsers() {
 	resp, err := referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
 		context.TODO(),
 		[]interface{}{
-			"QueryUsers",
+			"queryUsers",
 			[]string{"java.util.ArrayList"},
 			[]hessian.Object{
 				[]hessian.Object{
-					map[string]hessian.Object{
-						"iD":   "3213",
-						"name": "panty",
-						"age":  25,
-						"time": time.Now(),
+					&pkg.User{
+						ID:   "3213",
+						Name: "panty",
+						Age:  25,
+						Time: time.Now(),
 					},
-					map[string]hessian.Object{
-						"iD":   "3212",
-						"name": "XavierNiu",
-						"age":  24,
-						"time": time.Now().Add(4),
+					&pkg.User{
+						ID:   "3212",
+						Name: "XavierNiu",
+						Age:  24,
+						Time: time.Now().Add(4),
 					},
 				},
 			},

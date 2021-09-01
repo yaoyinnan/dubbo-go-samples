@@ -42,7 +42,7 @@ var appName = "UserConsumerTest"
 var referenceConfig = config.ReferenceConfig{
 	InterfaceName: "org.apache.dubbo.UserProvider",
 	Cluster:       "failover",
-	Registry:      "demoZk",
+	Registry:      "zk",
 	Protocol:      dubbo.DUBBO,
 	Generic:       "true",
 }

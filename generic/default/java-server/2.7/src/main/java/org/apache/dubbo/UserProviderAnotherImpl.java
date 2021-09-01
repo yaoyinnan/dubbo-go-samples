@@ -121,12 +121,12 @@ public class UserProviderAnotherImpl implements UserProvider {
 
     public User GetOneUser() { return new User("1000", "xavierniu", 24); }
 
-    public User QueryUser(User user) {
+    public User queryUser(User user) {
         logger.info("input com.dubbogo.user = " + user);
         return new User(user.getId(), "get:" + user.getName(), user.getAge() + 18);
     }
 
-    public Map<String, User> QueryUsers(ArrayList<User> userList) {
+    public Map<String, User> queryUsers(ArrayList<User> userList) {
         logger.info("input com.dubbogo.userList = " + userList);
         Map<String, User> map = new HashMap<String, User>();
         for(User user : userList){
@@ -136,7 +136,7 @@ public class UserProviderAnotherImpl implements UserProvider {
         return map;
     }
 
-    public Map<String, User> QueryAll() {
+    public Map<String, User> queryAll() {
         logger.info("input");
         Map<String, User> map = new HashMap<String, User>();
         map.put("001", new User("001", "Joe", 18));

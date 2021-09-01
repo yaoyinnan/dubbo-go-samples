@@ -91,13 +91,13 @@ public class UserProviderImpl implements UserProvider {
 
     public User GetOneUser() { return new User("1000", "xavierniu", 24); }
 
-    public User QueryUser(User user) {
+    public User queryUser(User user) {
         return new User(user.getId(), "hello:" +user.getName(), user.getAge() + 18);
     }
 
-    public Map<String, User> QueryUsers(ArrayList<User> userList) { return userMap; }
+    public Map<String, User> queryUsers(ArrayList<User> userList) { return userMap; }
 
-    public Map<String, User> QueryAll() {
+    public Map<String, User> queryAll() {
         return userMap;
     }
 

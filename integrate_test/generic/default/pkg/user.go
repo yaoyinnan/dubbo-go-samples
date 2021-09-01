@@ -82,7 +82,8 @@ func (u *UserProvider) GetOneUser(_ context.Context) (*User, error) {
 
 func (u *UserProvider) MethodMapper() map[string]string {
 	return map[string]string{
-		"QueryUser": "QueryUser",
+		"QueryUser":  "queryUser",
+		"QueryUsers": "queryUsers",
 	}
 }
 
