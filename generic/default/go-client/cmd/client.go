@@ -67,14 +67,19 @@ func init() {
 	_ = rootConfig.Init()
 	_ = referenceConfig.Init(rootConfig)
 	referenceConfig.GenericLoad(appName)
+
+	hessian.RegisterPOJO(&pkg.User{})
 }
 
 // need to setup environment variable "CONF_CONSUMER_FILE_PATH" to "conf/client.yml" before run
 func main() {
 	callGetUser()
+	//callGetOneUser()
+	callGetUsers()
+	callGetUsersMap()
 	callQueryUser()
 	callQueryUsers()
-	//callGetOneUser()
+	//callQueryAll()
 
 	initSignal()
 }
@@ -104,12 +109,12 @@ func initSignal() {
 }
 
 func callGetUser() {
-	logger.Infof("\n\n\nCall GetUser")
+	logger.Infof("Call GetUser")
 	logger.Infof("Start to generic invoke")
 	resp, err := referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
 		context.TODO(),
 		[]interface{}{
-			"GetUser",
+			"GetUser1",
 			[]string{"java.lang.String"},
 			[]hessian.Object{"A003"},
 		},
@@ -117,12 +122,114 @@ func callGetUser() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof("res: %+v\n", resp)
-	logger.Infof("success!\n\n\n")
+	logger.Infof("\n\nGetUser1(userId string) res: %+v\n", resp)
 
+	resp, err = referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
+		context.TODO(),
+		[]interface{}{
+			"GetUser2",
+			[]string{"java.lang.String", "java.lang.String"},
+			[]hessian.Object{"A003", "lily"},
+		},
+	)
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof("\n\nGetUser2(userId string, name string) res: %+v\n", resp)
+
+	resp, err = referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
+		context.TODO(),
+		[]interface{}{
+			"GetUser3",
+			[]string{"int"},
+			[]hessian.Object{1},
+		},
+	)
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof("\n\nGetUser3(userCode int) res: %+v\n", resp)
+
+	resp, err = referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
+		context.TODO(),
+		[]interface{}{
+			"GetUser4",
+			[]string{"int", "java.lang.String"},
+			[]hessian.Object{1, "zhangsan"},
+		},
+	)
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof("\n\nGetUser4(userCode int, name string) res: %+v\n", resp)
+
+	logger.Infof("success!")
 }
+
+func callGetOneUser() {
+	logger.Infof("Call GetOneUser")
+	logger.Infof("Start to generic invoke")
+	resp, err := referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
+		context.TODO(),
+		[]interface{}{
+			"GetOneUser",
+			[]string{},
+			[]hessian.Object{},
+		},
+	)
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof("\n\nGetOneUser() res: %+v\n", resp)
+	logger.Infof("success!")
+}
+
+func callGetUsers() {
+	logger.Infof("Call GetUsers")
+	logger.Infof("Start to generic invoke")
+	resp, err := referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
+		context.TODO(),
+		[]interface{}{
+			"GetUsers2",
+			[]string{"java.util.List"},
+			[]hessian.Object{
+				[]hessian.Object{
+					"001", "002", "003", "004",
+				},
+			},
+		},
+	)
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof("\n\nGetUsers1(userIdList []*string) res: %+v\n", resp)
+	logger.Infof("success!")
+}
+
+func callGetUsersMap() {
+	logger.Infof("Call GetUsersMap")
+	logger.Infof("Start to generic invoke")
+	resp, err := referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
+		context.TODO(),
+		[]interface{}{
+			"GetUsersMap",
+			[]string{"java.util.List"},
+			[]hessian.Object{
+				[]hessian.Object{
+					"001", "002", "003", "004",
+				},
+			},
+		},
+	)
+	if err != nil {
+		panic(err)
+	}
+	logger.Infof("\n\nGetUserMap(userIdList []*string) res: %+v\n", resp)
+	logger.Infof("success!")
+}
+
 func callQueryUser() {
-	logger.Infof("\n\n\nCall QueryUser")
+	logger.Infof("Call QueryUser")
 	logger.Infof("Start to generic invoke")
 	resp, err := referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
 		context.TODO(),
@@ -148,31 +255,33 @@ func callQueryUser() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof("res: %+v\n", resp)
-	logger.Infof("success!\n\n\n")
+	logger.Infof("\n\nqueryUser(user *User) res: %+v\n", resp)
+	logger.Infof("success!")
 }
 
 func callQueryUsers() {
-	logger.Infof("\n\n\nCall QueryUsers")
+	logger.Infof("Call QueryUsers")
 	logger.Infof("Start to generic invoke")
-	resp, err := referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
+	var resp, err = referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
 		context.TODO(),
 		[]interface{}{
 			"queryUsers",
 			[]string{"java.util.ArrayList"},
 			[]hessian.Object{
 				[]hessian.Object{
-					&pkg.User{
-						ID:   "3213",
-						Name: "panty",
-						Age:  25,
-						Time: time.Now(),
+					map[string]hessian.Object{
+						"id":    "3212",
+						"name":  "XavierNiu",
+						"age":   24,
+						"time":  time.Now().Add(4),
+						"class": "org.apache.dubbo.User",
 					},
-					&pkg.User{
-						ID:   "3212",
-						Name: "XavierNiu",
-						Age:  24,
-						Time: time.Now().Add(4),
+					map[string]hessian.Object{
+						"iD":    "3212",
+						"name":  "XavierNiu",
+						"age":   24,
+						"time":  time.Now().Add(4),
+						"class": "org.apache.dubbo.User",
 					},
 				},
 			},
@@ -181,24 +290,24 @@ func callQueryUsers() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof("res: %+v\n", resp)
-	logger.Infof("success!\n\n\n")
+	logger.Infof("\n\nqueryUsers(users []*User) res: %+v\n", resp)
+	logger.Infof("success!")
 }
 
-func callGetOneUser() {
-	logger.Infof("\n\n\nCall GetOneUser")
+func callQueryAll() {
+	logger.Infof("Call queryAll")
 	logger.Infof("Start to generic invoke")
 	resp, err := referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
 		context.TODO(),
 		[]interface{}{
-			"GetOneUser",
-			[]hessian.Object{},
+			"queryAll",
+			[]string{},
 			[]hessian.Object{},
 		},
 	)
 	if err != nil {
 		panic(err)
 	}
-	logger.Infof("res: %+v\n", resp)
-	logger.Infof("success!\n\n\n")
+	logger.Infof("\n\nqueryAll() res: %+v\n", resp)
+	logger.Infof("success!")
 }
