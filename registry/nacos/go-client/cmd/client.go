@@ -24,39 +24,43 @@ import (
 )
 
 import (
-	_ "dubbo.apache.org/dubbo-go/v3/cluster/cluster_impl"
-	_ "dubbo.apache.org/dubbo-go/v3/cluster/loadbalance"
-	_ "dubbo.apache.org/dubbo-go/v3/common/proxy/proxy_factory"
 	"dubbo.apache.org/dubbo-go/v3/config"
-	_ "dubbo.apache.org/dubbo-go/v3/filter/filter_impl"
-	_ "dubbo.apache.org/dubbo-go/v3/protocol/dubbo"
-	_ "dubbo.apache.org/dubbo-go/v3/registry/nacos"
-	_ "dubbo.apache.org/dubbo-go/v3/registry/protocol"
+	_ "dubbo.apache.org/dubbo-go/v3/imports"
 
 	hessian "github.com/apache/dubbo-go-hessian2"
 
 	"github.com/dubbogo/gost/log"
 )
 
-import (
-	"github.com/apache/dubbo-go-samples/registry/nacos/go-client/pkg"
-)
+type UserProvider struct {
+	GetUser func(ctx context.Context, req *User) (rsp *User, err error)
+}
 
-var userProvider = new(pkg.UserProvider)
+func (u *UserProvider) Reference() string {
+	return "userProvider"
+}
 
-func init() {
-	config.SetConsumerService(userProvider)
-	hessian.RegisterPOJO(&pkg.User{})
+type User struct {
+	ID   string
+	Name string
+	Age  int32
+	Time time.Time
+}
+
+func (*User) JavaClassName() string {
+	return "org.apache.dubbo.User"
 }
 
 // need to setup environment variable "CONF_CONSUMER_FILE_PATH" to "conf/client.yml" before run
 func main() {
+	var userProvider = &UserProvider{}
+	config.SetConsumerService(userProvider)
+	hessian.RegisterPOJO(&User{})
 	config.Load()
 	time.Sleep(3 * time.Second)
 
 	gxlog.CInfo("\n\n\nstart to test dubbo")
-	user := &pkg.User{}
-	err := userProvider.GetUser(context.TODO(), []interface{}{"A001"}, user)
+	user, err := userProvider.GetUser(context.TODO(), &User{Name: "Alex001"})
 	if err != nil {
 		gxlog.CError("error: %v\n", err)
 		os.Exit(1)
