@@ -71,7 +71,7 @@ func init() {
 	hessian.RegisterPOJO(&pkg.User{})
 }
 
-// need to setup environment variable "CONF_CONSUMER_FILE_PATH" to "conf/client.yml" before run
+// export DUBBO_GO_CONFIG_PATH= PATH_TO_SAMPLES/generic/default/go-client/conf/dubbogo.yml
 func main() {
 	callGetUser()
 	//callGetOneUser()

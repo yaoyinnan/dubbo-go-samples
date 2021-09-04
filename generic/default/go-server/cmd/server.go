@@ -29,7 +29,7 @@ import (
 	"time"
 )
 
-// export DUBBO_GO_CONFIG_PATH= PATH_TO_SAMPLES/helloworld/go-server/conf/dubbogo.yml
+// export DUBBO_GO_CONFIG_PATH= PATH_TO_SAMPLES/generic/default/go-server/conf/dubbogo.yml
 func main() {
 	config.SetProviderService(&pkg.User{})
 	config.Load()
