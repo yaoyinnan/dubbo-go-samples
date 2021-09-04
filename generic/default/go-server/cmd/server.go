@@ -22,11 +22,14 @@ import (
 	"dubbo.apache.org/dubbo-go/v3/config"
 	_ "dubbo.apache.org/dubbo-go/v3/imports"
 	"fmt"
-	"github.com/apache/dubbo-go-samples/integrate_test/generic/default/pkg"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+)
+
+import (
+	pkg "github.com/apache/dubbo-go-samples/integrate_test/generic/default/pkg"
 )
 
 // export DUBBO_GO_CONFIG_PATH= PATH_TO_SAMPLES/generic/default/go-server/conf/dubbogo.yml
