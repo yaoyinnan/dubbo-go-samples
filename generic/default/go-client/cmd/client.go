@@ -174,6 +174,8 @@ func callGetOneUser() {
 		[]interface{}{
 			"GetOneUser",
 			[]string{},
+			// TODO go-go []hessian.Object{}, go-java []string{}
+			//[]hessian.Object{},
 			[]hessian.Object{},
 		},
 	)
@@ -190,7 +192,7 @@ func callGetUsers() {
 	resp, err := referenceConfig.GetRPCService().(*generic.GenericService).Invoke(
 		context.TODO(),
 		[]interface{}{
-			"GetUsers2",
+			"GetUsers",
 			[]string{"java.util.List"},
 			[]hessian.Object{
 				[]hessian.Object{
@@ -302,6 +304,8 @@ func callQueryAll() {
 		[]interface{}{
 			"queryAll",
 			[]string{},
+			// TODO go-go []hessian.Object{}, go-java []string{}
+			//[]hessian.Object{},
 			[]hessian.Object{},
 		},
 	)

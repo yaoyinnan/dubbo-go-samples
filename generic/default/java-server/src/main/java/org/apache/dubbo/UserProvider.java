@@ -36,9 +36,7 @@ public interface UserProvider {
 
     User GetOneUser();
 
-    List<User> GetUsers1(ArrayList<String> userIdList);
-
-    List<User> GetUsers2(List<String> userIdList);
+    List<User> GetUsers(List<String> userIdList);
 
     Map<String, User> GetUsersMap(List<String> userIdList);
 

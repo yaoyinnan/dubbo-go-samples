@@ -61,24 +61,7 @@ public class UserProviderImpl implements UserProvider {
 
     public User GetOneUser() { return new User("1000", "xavierniu", 24); }
 
-    public List<User> GetUsers1(ArrayList<String> userIdList) {
-        Iterator it = userIdList.iterator();
-        List<User> userList = new ArrayList<User>();
-        LOG.warn("@userIdList size:" + userIdList.size());
-
-        while(it.hasNext()) {
-            String id = (String)(it.next());
-            LOG.info("GetUsers(@uid:" + id + ")");
-            if (userMap.containsKey(id)) {
-                userList.add(userMap.get(id));
-                LOG.info("id:" + id + ", com.dubbogo.user:" + userMap.get(id));
-            }
-        }
-
-        return userList;
-    }
-
-    public List<User> GetUsers2(List<String> userIdList) {
+    public List<User> GetUsers(List<String> userIdList) {
         Iterator it = userIdList.iterator();
         List<User> userList = new ArrayList<User>();
         LOG.warn("@userIdList size:" + userIdList.size());

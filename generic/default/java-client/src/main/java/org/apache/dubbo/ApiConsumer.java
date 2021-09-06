@@ -38,6 +38,7 @@ public class ApiConsumer {
 
      public static void main(String[] args) {
         initConfig();
+
          callGetUser();
         callGetOneUser();
         callGetUsers();
@@ -82,6 +83,7 @@ public class ApiConsumer {
     private static void callGetOneUser(){
         logger.info("\n\n\nCall GetOneUser");
         logger.info("Start to generic invoke");
+
         Object result = genericService.$invoke("GetOneUser", new String[]{} , new Object[]{});
         logger.info("\n\n\n" + "GetOneUser() " + "res: " + result + "\n\n\n");
     }
@@ -89,7 +91,6 @@ public class ApiConsumer {
     private static void callGetUsers(){
         logger.info("\n\n\nCall GetUsers");
         logger.info("Start to generic invoke");
-        Object result;
 
         List<String> userIdList = new ArrayList<String>();
         userIdList.add("001");
@@ -97,11 +98,8 @@ public class ApiConsumer {
         userIdList.add("003");
         userIdList.add("004");
 
-        result = genericService.$invoke("GetUsers1", new String[]{"java.util.ArrayList"}, new Object[]{userIdList});
-        logger.info("\n\n\n" + "GetUsers1(ArrayList<String> userIdList) " + "res: " + result + "\n\n\n");
-
-        result = genericService.$invoke("GetUsers2", new String[]{"java.util.List"}, new Object[]{userIdList});
-        logger.info("\n\n\n" + "GetUsers2(List<String> userIdList) " + "res: " + result + "\n\n\n");
+        Object result = genericService.$invoke("GetUsers", new String[]{"java.util.List"}, new Object[]{userIdList});
+        logger.info("\n\n\n" + "GetUsers(List<String> userIdList) " + "res: " + result + "\n\n\n");
     }
 
     private static void callGetUsersMap(){
@@ -122,6 +120,7 @@ public class ApiConsumer {
      private static void callQueryUser(){
          logger.info("\n\n\nCall QueryUser");
          logger.info("Start to generic invoke");
+
         User user = new User();
         user.setName("Patrick");
         user.setId("id");
@@ -133,17 +132,19 @@ public class ApiConsumer {
      private static void callQueryUsers(){
          logger.info("\n\n\nCall QueryUsers");
          logger.info("Start to generic invoke");
-        ArrayList<Map> userArr = new ArrayList<Map>();
-        Map<String, String> userMap1 = new HashMap<String, String>();
+
+        ArrayList<Map> userArr = new ArrayList<>();
+        Map<Object, Object> userMap1 = new HashMap<>();
         userMap1.put("id", "A001");
         userMap1.put("name", "Patrick");
-        userMap1.put("age", "10");
-        Map<String, String> userMap2 = new HashMap<String, String>();
+        userMap1.put("age", 10);
+        Map<Object, Object> userMap2 = new HashMap<>();
         userMap2.put("id", "A002");
         userMap2.put("name", "xavier-niu");
-        userMap2.put("age", "24");
+        userMap2.put("age", 24);
         userArr.add(userMap1);
         userArr.add(userMap2);
+
         Object result = genericService.$invoke("queryUsers", new String[]{"java.util.ArrayList"} , new Object[]{userArr});
          logger.info("\n\n\n" + "queryUsers(ArrayList<User> userList) " + "res: " + result + "\n\n\n");
      }
@@ -151,6 +152,7 @@ public class ApiConsumer {
     private static void callQueryAll(){
         logger.info("\n\n\nCall queryAll");
         logger.info("Start to generic invoke");
+
         Object result = genericService.$invoke("queryAll", new String[]{} , new Object[]{});
         logger.info("\n\n\n" + "queryAll() " + "res: " + result + "\n\n\n");
     }
