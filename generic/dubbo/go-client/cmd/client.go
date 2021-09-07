@@ -40,7 +40,7 @@ import (
 
 	hessian "github.com/apache/dubbo-go-hessian2"
 
-	"github.com/apache/dubbo-go-samples/integrate_test/generic/default/pkg"
+	"github.com/apache/dubbo-go-samples/integrate_test/generic/dubbo/pkg"
 )
 
 var (

@@ -96,7 +96,7 @@
 #array+=("rpc/dubbo3/codec-extension")
 #array+=("rpc/dubbo3/hessian2")
 #array+=("registry/nacos")
-array=("generic/default")
+array=("generic/dubbo")
 
 for((i=0;i<${#array[*]};i++))
 do
