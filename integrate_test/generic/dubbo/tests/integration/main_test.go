@@ -1,6 +1,3 @@
-//go:build integration
-// +build integration
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -21,6 +18,7 @@
 package integration
 
 import (
+	hessian "github.com/apache/dubbo-go-hessian2"
 	"os"
 	"testing"
 	"time"
@@ -38,20 +36,34 @@ import (
 	_ "dubbo.apache.org/dubbo-go/v3/registry/zookeeper"
 )
 
-var appName = "UserConsumerTest"
-var referenceConfig = config.ReferenceConfig{
-	InterfaceName: "org.apache.dubbo.UserProvider",
-	Cluster:       "failover",
-	Registry:      "zk",
-	Protocol:      dubbo.DUBBO,
-	Generic:       "true",
+var (
+	appName         = "dubbo.io"
+	referenceConfig config.ReferenceConfig
+)
+
+func init() {
+	registryConfig := &config.RegistryConfig{
+		Protocol: "zookeeper",
+		Address:  "127.0.0.1:2181",
+	}
+
+	referenceConfig = config.ReferenceConfig{
+		InterfaceName: "org.apache.dubbo.UserProvider",
+		Cluster:       "failover",
+		Registry:      []string{"zk"},
+		Protocol:      dubbo.DUBBO,
+		Generic:       "true",
+	}
+
+	rootConfig := config.NewRootConfig(config.WithRootRegistryConfig("zk", registryConfig))
+	_ = rootConfig.Init()
+	_ = referenceConfig.Init(rootConfig)
+	referenceConfig.GenericLoad(appName)
+
+	hessian.RegisterPOJO(User{})
 }
 
 func TestMain(m *testing.M) {
-	config.Load()
-	referenceConfig.GenericLoad(appName)
-	time.Sleep(3 * time.Second)
-
 	os.Exit(m.Run())
 }
 

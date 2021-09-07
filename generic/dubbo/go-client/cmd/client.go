@@ -19,7 +19,6 @@ package main
 
 import (
 	"context"
-	"dubbo.apache.org/dubbo-go/v3/config/generic"
 	"fmt"
 	"os"
 	"os/signal"
@@ -33,7 +32,7 @@ import (
 	"dubbo.apache.org/dubbo-go/v3/common/logger"
 	_ "dubbo.apache.org/dubbo-go/v3/common/proxy/proxy_factory"
 	"dubbo.apache.org/dubbo-go/v3/config"
-	_ "dubbo.apache.org/dubbo-go/v3/config/generic"
+	"dubbo.apache.org/dubbo-go/v3/config/generic"
 	_ "dubbo.apache.org/dubbo-go/v3/filter/filter_impl"
 	"dubbo.apache.org/dubbo-go/v3/protocol/dubbo"
 	_ "dubbo.apache.org/dubbo-go/v3/registry/protocol"
